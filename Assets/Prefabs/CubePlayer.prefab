@@ -775,8 +775,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e64adbc0e8b20e74aa216a0a79df75fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveToPosition: 1
-  _stabSpeed: 2
+  _isAttacking: 0
+  _isRebounding: 0
+  _moveToPosition: 2
+  _stabSpeed: 10
+  _stabTime: 0.1
+  inputReader: {fileID: 11400000, guid: 56655ef0b4098ac499cf5c412653a640, type: 2}
 --- !u!1 &7178022863412198115
 GameObject:
   m_ObjectHideFlags: 0

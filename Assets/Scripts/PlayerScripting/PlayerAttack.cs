@@ -14,48 +14,50 @@ public class PlayerAttack : NetworkBehaviour
     private Vector2 _destinationPosition;
 
     [SerializeField] private float _stabSpeed;
+    [SerializeField] private float _stabTime;
+
+    private float _stabStartTime;
+
+    [SerializeField] private InputReader inputReader;
 
     private void Start()
     {
+        inputReader.PrimaryFireEvent += StartAttacking;
         _startingPosition = transform.position;
     }
 
-    private void Update()
-    {
-        HandleAttacking();
 
-    }
-
-    private void HandleAttacking()
+    private void StartAttacking(bool buttonStatus)
     {
-        if (_isAttacking)
+        if (!_isAttacking && buttonStatus)
         {
-            _destinationPosition = new Vector2(_startingPosition.x, _startingPosition.y + _moveToPosition);
-            //transform.position = Vector2.MoveTowards(transform.position, _destinationPosition, _stabSpeed * Time.deltaTime);
-            transform.Translate(0, _moveToPosition * Time.deltaTime, 0);
-
-            if(transform.position.y >= _destinationPosition.y)
-            {
-                _isRebounding = true;
-            }
-
-            if (_isRebounding)
-            {
-                transform.position = Vector2.MoveTowards(transform.position, _startingPosition, _stabSpeed * Time.deltaTime);
-
-                if (transform.position == _startingPosition)
-                {
-                    
-                    _isAttacking = false;
-                    _isRebounding = false;
-                }
-
-            }
+            _isAttacking = true;
+            StartCoroutine(MoveObjectCoroutine());
         }
-    }
 
-    private void BasicStabAttack()
+    }
+    private IEnumerator MoveObjectCoroutine()
     {
-        _isAttacking = true;
+        _stabStartTime = Time.time;
+        Debug.Log("Move Forward Script");
+        while (_stabStartTime + _stabTime > Time.time)
+        {
+            transform.Translate(Vector3.up * _stabSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        yield return new WaitForSeconds(1.0f);
+
+        Debug.Log("Return script");
+        while (transform.position != _startingPosition)
+        {
+            Vector2.MoveTowards(transform.position, _startingPosition, _stabSpeed + _stabSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        transform.position = _startingPosition;
+        _isAttacking = false;
     }
 }
