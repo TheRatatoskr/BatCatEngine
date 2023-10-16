@@ -18,6 +18,8 @@ public class PlayerAttack : NetworkBehaviour
 
     private float _stabStartTime;
 
+    [SerializeField] private int _whichWeapon = 0;
+
     [SerializeField] private InputReader inputReader;
 
     private void Start()
@@ -32,11 +34,19 @@ public class PlayerAttack : NetworkBehaviour
         if (!_isAttacking && buttonStatus)
         {
             _isAttacking = true;
-            StartCoroutine(MoveObjectCoroutine());
+            switch(_whichWeapon)
+            {
+                case 0:
+                    StartCoroutine(SpearBehaviour());
+                    break;
+                default: 
+                    break;
+            }
+
         }
 
     }
-    private IEnumerator MoveObjectCoroutine()
+    private IEnumerator SpearBehaviour()
     {
         _stabStartTime = Time.time;
         Debug.Log("Move Forward Script");
@@ -45,19 +55,8 @@ public class PlayerAttack : NetworkBehaviour
             transform.Translate(Vector3.up * _stabSpeed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
-
-
-        yield return new WaitForSeconds(1.0f);
-
-        Debug.Log("Return script");
-        while (transform.position != _startingPosition)
-        {
-            Vector2.MoveTowards(transform.position, _startingPosition, _stabSpeed + _stabSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
-        }
-
-
-        transform.position = _startingPosition;
+        transform.localPosition = _startingPosition;
         _isAttacking = false;
+       
     }
 }

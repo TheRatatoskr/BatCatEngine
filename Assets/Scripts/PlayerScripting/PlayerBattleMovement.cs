@@ -22,7 +22,7 @@ public class PlayerBattleMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         inputReader.MoveEvent += UpdateMovement;
-        inputReader.PrimaryFireEvent += JumpPlayer;
+        //inputReader.PrimaryFireEvent += JumpPlayer;
     }
 
     private void Update()
